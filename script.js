@@ -2,21 +2,18 @@ const inputBox = document.getElementById('input');
 const expressionDiv = document.getElementById('expression');
 const resultDiv = document.getElementById('result');
 
-console.log(resultDiv)
 // Define the expression and result variable
 let expression = ' ';
 let result = ' ';
 
-// define event handler for button click
 
+
+// define event handler for button click
 function buttonClick(event) {
     // get values from clicked button
     const target = event.target;
     const action = target.dataset.action;
     const value = target.dataset.value;
-    // console.log(target);
-    // console.log("action: " + action);
-    // console.log("value: " + value);
 
     // Switch case to control the calculator
     switch (action){
@@ -33,8 +30,7 @@ function buttonClick(event) {
         case 'subtraction':
         case 'multiplication':
         case 'division':
-            console.log(expression)
-            console.log(result)
+            
             if (expression === '' && result !== '' ){
                 // add an operator to the expression
                 startFromResult(value);
@@ -47,19 +43,29 @@ function buttonClick(event) {
         case 'submit':
             submitValue();
             break;
-            
+        case 'negate':
+            negateValue();
+            break;
+        case 'mod':
+            percentage();
+            break;
+        case 'decimal':
+            decimal(value);
+            break;
     }
-
     // update display
     updateDisplay(expression, result);
+    console.log(expression)
+    console.log(result)
 }
 
-inputBox.addEventListener('click', buttonClick);
 
 function addValue(value) {
-    // add the value to the expression
-    expression += value;
-    // console.log(expression);
+    if (expression === "0") {
+        return expression = value;
+    } else {
+        return expression += value;
+    }
     
 }
 
@@ -85,17 +91,69 @@ function isLastCharOperator() {
 }
 
 function startFromResult(value) {
-    expression += result + value;
+    expression = result + value;
 }
 
 function submitValue(){
     result = evaluateExpression();
-    expression =' ';
+    expression ='';
 }
 
 function evaluateExpression() {
     const evalResult = eval(expression);
 
-    return isNaN(evalResult) || !isFinite(evalResult) ? ' ' : evalResult < 1 ? parseFloat(evalResult.toFixed(10)) : parseFloat(evalResult.toFixed(2));
+    return isNaN(evalResult) || !isFinite(evalResult) ? '' 
+    : evalResult < 1 ? parseFloat(evalResult.toFixed(10)) 
+    : parseFloat(evalResult.toFixed(2));
 
 }
+
+function negateValue() {
+    // negate the result if expression is empty and result is negative
+    if (expression === '' && result !== '' ) {
+        result = -result;
+    } else if (!expression.startsWith('-') && expression !== '') {
+        expression = '-' + expression
+    } else if (expression.startsWith('-')) {
+        expression = expression.slice(1)
+    }
+}
+
+function percentage() {
+    if (expression !== '') {
+        result = evaluateExpression();
+        expression = '';
+        if (!isNaN(result) && isFinite(result)) {
+            result /= 100;
+        } else {
+            result = '';
+        }
+    
+    } else if (result !== ''){
+        // if expressi0n is empty but the result exists
+        result =parseFloat(result) /100;
+    }
+}
+
+function decimal(value) {
+
+    const lastOperatorIndex = Math.max (
+        expression.lastIndexOf('+'),
+        expression.lastIndexOf('-'),
+        expression.lastIndexOf('*'),
+        expression.lastIndexOf('/'),
+    )
+
+    const lastDecimalIndex = expression.lastIndexOf('.')
+
+    console.log(lastOperatorIndex)
+    console.log(lastDecimalIndex)
+
+    if (lastDecimalIndex > lastOperatorIndex) {
+        return;
+    } else if (!expression.endsWith('.')) {
+        addValue(value);
+    }
+}
+
+inputBox.addEventListener('click', buttonClick);
