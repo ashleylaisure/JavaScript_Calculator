@@ -62,9 +62,11 @@ function buttonClick(event) {
 
 function addValue(value) {
     if (expression === "0") {
-        return expression = value;
+        expression = value;
+    } else if (expression === '' && value === '0') {
+        return; 
     } else {
-        return expression += value;
+        expression += value;
     }
     
 }
@@ -102,13 +104,17 @@ function submitValue(){
 function evaluateExpression() {
     const evalResult = eval(expression);
 
-    return isNaN(evalResult) || !isFinite(evalResult) ? '' 
+    return isNaN(evalResult) || !isFinite(evalResult) ? ''
+    : evalResult === 0 ? '0'
     : evalResult < 1 ? parseFloat(evalResult.toFixed(10)) 
     : parseFloat(evalResult.toFixed(2));
 
 }
 
 function negateValue() {
+    if (expression === '0' || result === '0') {
+        return;
+    }
     // negate the result if expression is empty and result is negative
     if (expression === '' && result !== '' ) {
         result = -result;
