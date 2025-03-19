@@ -3,8 +3,8 @@ const expressionDiv = document.getElementById('expression');
 const resultDiv = document.getElementById('result');
 
 // Define the expression and result variable
-let expression = ' ';
-let result = ' ';
+let expression = '';
+let result = '';
 
 
 
@@ -56,6 +56,7 @@ function buttonClick(event) {
     // update display
     updateDisplay(expression, result);
     console.log(expression)
+    console.log(typeof expression)
     console.log(result)
 }
 
